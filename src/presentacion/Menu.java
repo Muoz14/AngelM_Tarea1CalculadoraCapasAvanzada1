@@ -1,7 +1,9 @@
 package presentacion;
 
 import dominio.*;
+import servicio.IServicioAuditoria;
 import servicio.IServiciodeCalculadora;
+import servicio.ServicioAuditoria;
 import servicio.ServiciodeCalculadora;
 
 import java.util.Scanner;
@@ -13,10 +15,13 @@ public class Menu {
 
     // Declaramos la Interfaz, instanciamos la Implementacion
     private static final IServiciodeCalculadora calculadora = new ServiciodeCalculadora();
+    private static final IServicioAuditoria auditoria = new ServicioAuditoria();
 
     public static void main(String[] args) {
 
         var salir = false;
+
+        auditoria.registrarAuditoria("INICIO", "El usuario inició el programa");
 
         while (!salir) {
             try {
@@ -31,10 +36,11 @@ public class Menu {
 
     private static void mostrarMenu() {
         System.out.println("""
-                    \n========= CALCULADORA CIENTIFICA =========
+                    \n========= CALCULADORA CIENTÍFICA =========
                         1. Operaciones Aritméticas
                         2. Logaritmos
                         3. Trigonometría
+                        4. Auditoría
                         0. Salir
                     """);
         System.out.print("Ingrese una opción: ");
@@ -45,20 +51,34 @@ public class Menu {
         var salir = false;
 
         switch (opcion) {
-            case 1 -> menuAritmetica();
+            case 1 -> {
+                auditoria.registrarAuditoria("SUBMENÚ", "Ingreso al submenu de operaciones Aritmeticas");
+                menuAritmetica();
+            }
             case 2 -> {
+                auditoria.registrarAuditoria("SUBMENÚ", "Ingreso al submenu de Logaritmos");
                 menuLogaritmos();
                 pausarConsola();
             }
             case 3 -> {
+                auditoria.registrarAuditoria("SUBMENÚ", "Ingreso al submenu de operaciones Trigonometricas");
                 menuTrigonometria();
+                pausarConsola();
+            }
+            case 4 -> {
+                auditoria.registrarAuditoria("VISUALIZAR", "El usuario visualizó la Auditoría");
+                auditoria.mostrarAuditoria();
                 pausarConsola();
             }
             case 0 -> {
                 System.out.println("\nPrograma finalizado...");
+                auditoria.registrarAuditoria("SALIR", "El usuario cerró el programa");
                 salir = true;
             }
-            default -> System.out.println("\nOpción inválida.");
+            default -> {
+                auditoria.registrarAuditoria("ERROR", "El usuario ingreso una opción inválida");
+                System.out.println("\nOpción inválida.");
+            }
         }
         return salir;
     }
@@ -86,18 +106,21 @@ public class Menu {
                         double[] nums = pedirNumerosArray();
                         NumerosOpArit datos = new NumerosOpArit(nums);
                         System.out.println("Resultado suma: " + calculadora.suma(datos));
+                        auditoria.registrarAuditoria("SUMA", "El usuario sumó " + nums.length + " numeros que dio como resultado = " + calculadora.suma(datos));
                         pausarConsola();
                     }
                     case 2 -> {
                         double[] nums = pedirNumerosArray();
                         NumerosOpArit datos = new NumerosOpArit(nums);
                         System.out.println("Resultado resta: " + calculadora.resta(datos));
+                        auditoria.registrarAuditoria("RESTA", "El usuario restó " + nums.length + " numeros que dio como resultado = " + calculadora.resta(datos));
                         pausarConsola();
                     }
                     case 3 -> {
                         double[] nums = pedirNumerosArray();
                         NumerosOpArit datos = new NumerosOpArit(nums);
                         System.out.println("Resultado multiplicacion: " + calculadora.multiplicacion(datos));
+                        auditoria.registrarAuditoria("MULTIPLICACIÓN", "El usuario multiplicó " + nums.length + " numeros que dio como resultado = " + calculadora.multiplicacion(datos));
                         pausarConsola();
                     }
                     case 4 -> {
@@ -107,9 +130,14 @@ public class Menu {
                         double b = Double.parseDouble(entrada.nextLine());
 
                         System.out.println("Resultado división: " + calculadora.division(a, b));
+                        auditoria.registrarAuditoria("DIVISIÓN", "El usuario dividió 2 numeros que dio como resultado = " + calculadora.division(a, b));
                         pausarConsola();
                     }
-                    case 0 -> salirSub = true;
+                    case 0 -> {
+                        auditoria.registrarAuditoria("REGRESAR", "El usuario regresó al menú principal desde el submenú de Operaciones Aritmeticas");
+                        pausarConsola();
+                        salirSub = true;
+                    }
                     default -> System.out.println("Opción inválida.");
                 }
             } catch (Exception e) {
@@ -127,6 +155,10 @@ public class Menu {
 
             System.out.println("Logaritmo natural: " + calculadora.logNatural(num));
             System.out.println("Logaritmo base 10: " + calculadora.logBase10(num));
+
+            auditoria.registrarAuditoria("Log Natural", "El logaritmos natural de " + n + " dio como resultado = " + calculadora.logNatural(num));
+            auditoria.registrarAuditoria("Log Base 10", "El logaritmos base 10 de " + n + " dio como resultado = " + calculadora.logBase10(num));
+
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
@@ -158,6 +190,7 @@ public class Menu {
                         NumerosTrigo angulo = new NumerosTrigo(g);
 
                         System.out.println("Seno: " + calculadora.seno(angulo));
+                        auditoria.registrarAuditoria("SENO", "El usuario ingresó el ángulo de " + g + "° que dió como resultado = " + calculadora.seno(angulo));
                         pausarConsola();
                     }
 
@@ -167,6 +200,7 @@ public class Menu {
                         NumerosTrigo angulo = new NumerosTrigo(g);
 
                         System.out.println("Coseno: " + calculadora.coseno(angulo));
+                        auditoria.registrarAuditoria("COSENO", "El usuario ingresó el ángulo de " + g + "° que dió como resultado = " + calculadora.coseno(angulo));
                         pausarConsola();
                     }
 
@@ -176,10 +210,14 @@ public class Menu {
                         NumerosTrigo angulo = new NumerosTrigo(g);
 
                         System.out.println("Tangente: " + calculadora.tangente(angulo));
+                        auditoria.registrarAuditoria("TAGENTE", "El usuario ingresó el ángulo de " + g + "° que dió como resultado = " + calculadora.tangente(angulo));
                         pausarConsola();
                     }
 
-                    case 0 -> salirSub = true;
+                    case 0 -> {
+                        auditoria.registrarAuditoria("REGRESAR", "El usuario regresó al menú principal desde el submenú de Trigonometria");
+                        salirSub = true;
+                    }
 
                     default -> System.out.println("Opción inválida.");
 
