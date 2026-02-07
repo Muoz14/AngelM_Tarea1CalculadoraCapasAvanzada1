@@ -1,10 +1,7 @@
 package presentacion;
 
 import dominio.*;
-import servicio.IServicioAuditoria;
-import servicio.IServiciodeCalculadora;
-import servicio.ServicioAuditoria;
-import servicio.ServiciodeCalculadora;
+import servicio.*;
 
 import java.util.Scanner;
 
@@ -15,7 +12,7 @@ public class Menu {
 
     // Declaramos la Interfaz, instanciamos la Implementacion
     private static final IServiciodeCalculadora calculadora = new ServiciodeCalculadora();
-    private static final IServicioAuditoria auditoria = new ServicioAuditoria();
+    private static final IServicioAuditoria auditoria = new ServicioAuditoriaArchivo();
 
     public static void main(String[] args) {
 
